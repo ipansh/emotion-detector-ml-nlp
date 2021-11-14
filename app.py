@@ -1,5 +1,10 @@
 from flask import Flask, request, render_template
 
+import tensorflow as tf
+import keras
+from keras.models import model_from_json
+from keras.preprocessing.sequence import pad_sequences
+
 app = Flask(__name__)
 
 @app.route("/")
