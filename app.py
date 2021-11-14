@@ -10,6 +10,9 @@ loaded_model_json = json_file.read()
 json_file.close()
 predictor = model_from_json(loaded_model_json)
 
+# load weights into new model
+predictor.load_weights('model.h5')
+
 app = Flask(__name__)
 
 @app.route("/")
