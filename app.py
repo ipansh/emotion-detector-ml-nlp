@@ -7,6 +7,8 @@ from keras.preprocessing.sequence import pad_sequences
 
 import joblib
 
+import numpy as np
+
 json_file = open('model.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
@@ -24,7 +26,16 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template('page.html')
+    return render_template('page.html') 
+
+@app.route("/detector", methods = ['POST'])
+def emotion_detector():
+    message = [item for item in request.form.values()][0]
+    one_hot_rep = tokenizer.texts_to_sequences([message])
+    padded_sent = pad_sequences(one_hot_rep, padding = 'pre', maxlen = 62)
+    encoded_label = np.argmax(predictor.predict(padded_sent), axis=-1)[0]
+    response = hot_encode_dict[encoded_label]
+    return render_template('page.html', prediction_text = 'The emotion is: {}'.format(response))
 
 if __name__  == '__main__': 
     app.run(debug=True)
